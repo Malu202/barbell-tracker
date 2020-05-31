@@ -128,6 +128,7 @@ class Detection {
 boxesCheckbox.addEventListener("click", newDrawingProperties);
 pathCheckbox.addEventListener("click", newDrawingProperties);
 
+
 let drawBoxes;
 let drawPath;
 function newDrawingProperties() {

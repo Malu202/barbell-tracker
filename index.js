@@ -40,7 +40,8 @@ async function detect() {
         const inferenceTime = Math.round((performance.now() - computeStart));
         // console.log("inference: " + inferenceTime + "ms");
         addInferenceTime(inferenceTime)
-        input.currentTime += inferenceTime * 0.001 * 0.5;
+        if (phoneMode) input.currentTime += 0.3;
+        else input.currentTime += inferenceTime * 0.001 * 0.5;
 
         // console.log('numTensors ' + JSON.stringify(tf.memory()));
         if (input.currentTime >= input.duration) computeButton.click();
@@ -97,3 +98,9 @@ function showInferenceTime() {
     performanceIndex = 0;
     inferenceSum = 0;
 }
+
+const phoneModeCheckbox = document.getElementById("phoneMode")
+let phoneMode = phoneModeCheckbox.checked;
+phoneModeCheckbox.addEventListener("click", function () {
+    phoneMode = phoneModeCheckbox.checked;
+});
