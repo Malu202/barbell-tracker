@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width,height=device-height">
+    <title>Document</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #imgContainer {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #imgContainer>canvas {
+            position: absolute;
+
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+            z-index: -500;
+        }
+
+        #imgContainer button {
+            width: 80px;
+            height: 50px;
+            margin: 8px 8px 8px 8px
+        }
+
+        #file-input {
+            width: auto;
+            margin: 8px 8px 8px 8px
+        }
+
+        #videoInput {
+            display: none;
+        }
+
+        #performanceLabel {
+            background-color: #fff;
+            position: absolute;
+            right: 0;
+        }
+
+        #imgContainer>div>label {
+            margin-top: 8px;
+            background: #fff;
+        }
+
+        #imgContainer>div>input {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <video id="videoInput" muted paused></video>
+    <div id="imgContainer">
+        <canvas id="canvas"></canvas>
+
+        <div id="performanceLabel"></div>
+
+        <button id="compute" disabled>stop</button>
+        <input id="file-input" type="file" name="name" />
+        <div>
+            <input type="checkbox" id="boxes" name="boxes">
+            <label for="boxes"> boxes</label><br>
+        </div>
+        <div>
+            <input type="checkbox" id="path" name="path" checked>
+            <label for="path"> path</label><br>
+        </div>
+    </div>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+<script src="./drawAnnotations.js"></script>
+<script src="./index.js"></script>
+
+</html>
