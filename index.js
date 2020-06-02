@@ -1,14 +1,24 @@
-const urlParams = new URLSearchParams(window.location.search);
-let modelName = urlParams.get('model');
-if (modelName == undefined) modelName = "resnet50";
 
-const MODEL_URL = "models/" + modelName + "/model.json";
-const CLASSES = ["hantel", "scheibe"]
-// const input = document.getElementById("input");
 const input = document.getElementById("videoInput")
 const fileInput = document.getElementById('file-input');
 const computeButton = document.getElementById("compute");
-const modelLabel = document.getElementById("modelLabel")
+const modelLabel = document.getElementById("modelLabel");
+const phoneModeCheckbox = document.getElementById("phoneMode");
+
+
+const urlParams = new URLSearchParams(window.location.search);
+let modelName = urlParams.get('model');
+if (modelName == undefined) modelName = "resnet50";
+if (urlParams.get('boxes') == "true" && !boxesCheckbox.checked) boxesCheckbox.click();
+if (urlParams.get('boxes') == "false" && boxesCheckbox.checked) boxesCheckbox.click();
+if (urlParams.get('path') == "true" && !pathCheckbox.checked) pathCheckbox.click();
+if (urlParams.get('path') == "false" && pathCheckbox.checked) pathCheckbox.click();
+if (urlParams.get('phoneMode') == "true" && !phoneModeCheckbox.checked) phoneModeCheckbox.click();
+if (urlParams.get('phoneMode') == "false" && phoneModeCheckbox.checked) phoneModeCheckbox.click();
+
+
+const MODEL_URL = "models/" + modelName + "/model.json";
+const CLASSES = ["hantel", "scheibe"]
 
 load();
 
@@ -105,8 +115,7 @@ function showInferenceTime() {
     inferenceSum = 0;
 }
 
-const phoneModeCheckbox = document.getElementById("phoneMode")
 let phoneMode = phoneModeCheckbox.checked;
-phoneModeCheckbox.addEventListener("click", function () {
+phoneModeCheckbox.addEventListener("change", function () {
     phoneMode = phoneModeCheckbox.checked;
 });

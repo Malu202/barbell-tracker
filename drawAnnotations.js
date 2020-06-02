@@ -125,8 +125,8 @@ class Detection {
     }
 }
 
-boxesCheckbox.addEventListener("click", newDrawingProperties);
-pathCheckbox.addEventListener("click", newDrawingProperties);
+boxesCheckbox.addEventListener("change", newDrawingProperties);
+pathCheckbox.addEventListener("change", newDrawingProperties);
 
 
 let drawBoxes;
