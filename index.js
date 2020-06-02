@@ -37,7 +37,7 @@ async function detect() {
         const num_detections = output[3].arraySync()[0];
         tf.dispose(output);
 
-        console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
+        //console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
 
         drawAnnotations(detection_boxes, detection_scores, detection_classes, num_detections);
 
