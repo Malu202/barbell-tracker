@@ -72,7 +72,7 @@ function getInputData() {
         let xResolution = model.executor.graph.inputs[0].attrParams.shape.value[1];
         let yResolution = model.executor.graph.inputs[0].attrParams.shape.value[2];
 
-        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input).sub(127).div(127), [xResolution, yResolution]).expandDims(0);
+        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [xResolution, yResolution]).expandDims(0);
         return inputData;
     })
 }
