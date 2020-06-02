@@ -33,7 +33,7 @@
         #imgContainer button {
             width: 80px;
             height: 50px;
-            margin: 8px 8px 8px 8px
+            margin: 24px 8px 8px 8px
         }
 
         #file-input {
@@ -51,6 +51,12 @@
             right: 0;
         }
 
+        #modelLabel {
+            background-color: #fff;
+            position: absolute;
+            left: 0;
+        }
+
         #imgContainer>div>label {
             margin-top: 8px;
             background: #fff;
@@ -66,7 +72,7 @@
     <video id="videoInput" muted paused></video>
     <div id="imgContainer">
         <canvas id="canvas"></canvas>
-
+        <div id="modelLabel"></div>
         <div id="performanceLabel"></div>
 
         <button id="compute" disabled>stop</button>

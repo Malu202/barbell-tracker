@@ -8,12 +8,15 @@ const CLASSES = ["hantel", "scheibe"]
 const input = document.getElementById("videoInput")
 const fileInput = document.getElementById('file-input');
 const computeButton = document.getElementById("compute");
+const modelLabel = document.getElementById("modelLabel")
 
 load();
 
 let model;
 async function load() {
+    modelLabel.innerText = "loadingModel...";
     model = await tf.loadGraphModel(MODEL_URL);
+    modelLabel.innerText = "model: " + model.modelUrl.split('/')[1];
     detect();
 }
 
@@ -56,9 +59,10 @@ async function detect() {
 
 function getInputData() {
     return tf.tidy(function () {
-        let resolution = 320;
-        if (modelName == "resnet50") resolution = 640;
-        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [resolution, resolution]).expandDims(0);
+        let xResolution = model.executor.graph.inputs[0].attrParams.shape.value[1];
+        let yResolution = model.executor.graph.inputs[0].attrParams.shape.value[2];
+
+        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [xResolution, yResolution]).expandDims(0);
         return inputData;
     })
 }
