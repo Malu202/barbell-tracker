@@ -1,4 +1,8 @@
-const MODEL_URL = "web_model/model.json";
+const urlParams = new URLSearchParams(window.location.search);
+let modelName = urlParams.get('model');
+if (modelName == undefined) modelName = "resnet50";
+
+const MODEL_URL = "models/" + modelName + "/model.json";
 const CLASSES = ["hantel", "scheibe"]
 // const input = document.getElementById("input");
 const input = document.getElementById("videoInput")
@@ -33,7 +37,7 @@ async function detect() {
         const num_detections = output[3].arraySync()[0];
         tf.dispose(output);
 
-        // console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
+        console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
 
         drawAnnotations(detection_boxes, detection_scores, detection_classes, num_detections);
 
@@ -52,11 +56,9 @@ async function detect() {
 
 function getInputData() {
     return tf.tidy(function () {
-        let inputData;
-        if (input.width != 640 || input.height != 640) {
-            inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [640, 640])
-                .expandDims(0);
-        } else inputData = tf.browser.fromPixels(input).expandDims(0);
+        let resolution = 320;
+        if (modelName == "resnet50") resolution = 640;
+        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [resolution, resolution]).expandDims(0);
         return inputData;
     })
 }
@@ -84,7 +86,7 @@ const performanceAveraging = 4;
 let inferenceSum = 0;
 let performanceIndex = 0;
 function addInferenceTime(time) {
-    console.log("add " + time);
+    //console.log("add " + time);
     //ignore first time, because it includes setup
     if (inferenceSum == 0) {
         inferenceSum = 1;
