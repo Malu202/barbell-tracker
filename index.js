@@ -121,7 +121,7 @@ function addInferenceTime(time) {
     performanceIndex++;
 }
 function showInferenceTime() {
-    performanceLabel.innerText = "inference: " + Math.round(inferenceSum / performanceIndex) + "ms";
+    performanceLabel.innerText = "inference: " + Math.round(inferenceSum / performanceIndex) + "ms" + '\n' + "backend: " + tf.getBackend();
     performanceIndex = 0;
     inferenceSum = 0;
 }
