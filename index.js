@@ -21,13 +21,18 @@ const MODEL_URL = "models/" + modelName + "/model.json";
 const CLASSES = ["hantel", "scheibe"]
 
 load();
-
 let model;
 async function load() {
-    modelLabel.innerText = "loadingModel...";
-    model = await tf.loadGraphModel(MODEL_URL);
-    modelLabel.innerText = "model: " + model.modelUrl.split('/')[1];
-    detect();
+    try {
+        modelLabel.innerText = "loadingModel...";
+
+        model = await tf.loadGraphModel(MODEL_URL);
+        modelLabel.innerText = "model: " + model.modelUrl.split('/')[1];
+        detect();
+    } catch (error){
+        modelLabel.innerText = "";
+        displayError(error);
+    }
 }
 
 async function detect() {
