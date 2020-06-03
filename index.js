@@ -29,7 +29,7 @@ async function load() {
         model = await tf.loadGraphModel(MODEL_URL);
         modelLabel.innerText = "model: " + model.modelUrl.split('/')[1];
         detect();
-    } catch (error){
+    } catch (error) {
         modelLabel.innerText = "Error";
         displayError(error);
     }
@@ -38,37 +38,41 @@ async function load() {
 async function detect() {
     input.currentTime = input.currentTime;
     input.oncanplay = async function () {
-        input.oncanplay = null;
-        const computeStart = performance.now();
+        try {
+            input.oncanplay = null;
+            const computeStart = performance.now();
 
-        const inputData = getInputData();
+            const inputData = getInputData();
 
-        const output = await model.executeAsync({ 'image_tensor': inputData },
-            ['detection_boxes', 'detection_scores', 'detection_classes', 'num_detections']);
+            const output = await model.executeAsync({ 'image_tensor': inputData },
+                ['detection_boxes', 'detection_scores', 'detection_classes', 'num_detections']);
 
-        inputData.dispose();
+            inputData.dispose();
 
 
-        const detection_boxes = output[0].arraySync()[0];
-        const detection_scores = output[1].arraySync()[0];
-        const detection_classes = output[2].arraySync()[0];
-        const num_detections = output[3].arraySync()[0];
-        tf.dispose(output);
+            const detection_boxes = output[0].arraySync()[0];
+            const detection_scores = output[1].arraySync()[0];
+            const detection_classes = output[2].arraySync()[0];
+            const num_detections = output[3].arraySync()[0];
+            tf.dispose(output);
 
-        //console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
+            //console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
 
-        drawAnnotations(detection_boxes, detection_scores, detection_classes, num_detections);
+            drawAnnotations(detection_boxes, detection_scores, detection_classes, num_detections);
 
-        const inferenceTime = Math.round((performance.now() - computeStart));
-        // console.log("inference: " + inferenceTime + "ms");
-        addInferenceTime(inferenceTime)
-        if (phoneMode) input.currentTime += 0.3;
-        else input.currentTime += inferenceTime * 0.001 * 0.5;
+            const inferenceTime = Math.round((performance.now() - computeStart));
+            // console.log("inference: " + inferenceTime + "ms");
+            addInferenceTime(inferenceTime)
+            if (phoneMode) input.currentTime += 0.3;
+            else input.currentTime += inferenceTime * 0.001 * 0.5;
 
-        // console.log('numTensors ' + JSON.stringify(tf.memory()));
-        if (input.currentTime >= input.duration) computeButton.click();
+            // console.log('numTensors ' + JSON.stringify(tf.memory()));
+            if (input.currentTime >= input.duration) computeButton.click();
 
-        if (!stopped) detect();
+            if (!stopped) detect();
+        } catch (error) {
+            displayError(error)
+        }
     };
 }
 
@@ -84,8 +88,8 @@ function getInputData() {
 
 let stopped = false;
 computeButton.addEventListener("click", function () {
-    if(input.currentTime >= input.duration) input.currentTime=0;
-    
+    if (input.currentTime >= input.duration) input.currentTime = 0;
+
     stopped = !stopped;
     if (!stopped) {
         computeButton.innerText = "stop";
