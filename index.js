@@ -30,7 +30,7 @@ async function load() {
         modelLabel.innerText = "model: " + model.modelUrl.split('/')[1];
         detect();
     } catch (error){
-        modelLabel.innerText = "";
+        modelLabel.innerText = "Error";
         displayError(error);
     }
 }
@@ -84,6 +84,8 @@ function getInputData() {
 
 let stopped = false;
 computeButton.addEventListener("click", function () {
+    if(input.currentTime >= input.duration) input.currentTime=0;
+    
     stopped = !stopped;
     if (!stopped) {
         computeButton.innerText = "stop";
