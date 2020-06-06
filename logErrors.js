@@ -20,4 +20,5 @@ function displayError(error) {
     } else {
         alert("Error in: " + error.filename + '\n' + error.stack)
     }
+    throw error;
 }
