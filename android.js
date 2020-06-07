@@ -13,23 +13,32 @@
 // disabledTfjs.parentNode.removeChild(disabledTfjs);
 
 let adck = false;
-if(typeof Android !== "undefined"){
-    console.log("hi")
-    if(Android.exists) adck = true;
+if (typeof Android !== "undefined") {
+    adck = true;
 }
 const IS_ANDROID = adck;
-if(IS_ANDROID) alert("hi android!")
 
 let newVideo;
-if(IS_ANDROID) {
-    tf = null;
+if (IS_ANDROID) {
 
-    document.getElementById('file-input').addEventListener("click",function(){
-        Android.loadFile();
-    });
+    tf = {};
+    alert = function(msg) {Android.showToast(msg);};
+    
+    alert("Android mode enabled")
 
-    newVideo = function(path){
-        document.getElementById('input').src = path;
+    // document.getElementById('file-input').addEventListener("click", function () {
+    //     Android.loadFile();
+    // });
+
+    newVideo = function (path) {
+        document.getElementById('videoInput').src = path;
     }
+
+    tf.loadGraphModel = function () {
+        return {
+            modelUrl: "",
+            executeAsync:function () { }
+        }
+    };
 }
 
