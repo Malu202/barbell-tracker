@@ -19,10 +19,10 @@ function drawAnnotations(detection_boxes, detection_scores, detection_classes, n
     currentDetections = [];
     for (let i = 0; i < num_detections; i++) {
         detection_classes[i]
-        if (detection_scores[i] > 0.5 && detection_classes[i] == 2) {
+        if (detection_scores[i] > 0.5 && Math.round(detection_classes[i]) == 2) {
             currentDetections.push(new Detection(detection_boxes[i], detection_classes[i], detection_scores[i]))
         } else if (detection_scores[i] > 0.2) {
-            if (detection_classes[i] == 1) currentDetections.push(new Detection(detection_boxes[i], detection_classes[i], detection_scores[i]))
+            if (Math.round(detection_classes[i]) == 1) currentDetections.push(new Detection(detection_boxes[i], detection_classes[i], detection_scores[i]))
         } else break;
     }
 
@@ -100,7 +100,7 @@ class Detection {
             this.x = d[1];
             this.height = d[2] - this.y;
             this.width = d[3] - this.x;
-            this.class = CLASSES[detection_class - 1];
+            this.class = CLASSES[Math.round(detection_class) - 1];
             this.score = detection_score;
         }
     }

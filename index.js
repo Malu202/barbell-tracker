@@ -42,19 +42,28 @@ async function detect() {
             input.oncanplay = null;
             const computeStart = performance.now();
 
+            let detection_boxes, detection_scores, detection_classes;
             const inputData = getInputData();
 
-            const output = await model.executeAsync({ 'image_tensor': inputData },
-                ['detection_boxes', 'detection_scores', 'detection_classes', 'num_detections']);
+            if (ANDROID) {
+                const output = JSON.parse(Android.detect(inputData));
+                detection_boxes = output[0];
+                detection_scores = output[1];
+                detection_classes = output[2];
+                num_detections = output[3];
+            } else {
+                const output = await model.executeAsync({ 'image_tensor': inputData },
+                    ['detection_boxes', 'detection_scores', 'detection_classes', 'num_detections']);
 
-            inputData.dispose();
+                inputData.dispose();
 
+                detection_boxes = output[0].arraySync()[0];
+                detection_scores = output[1].arraySync()[0];
+                detection_classes = output[2].arraySync()[0];
+                num_detections = output[3].arraySync()[0];
+                tf.dispose(output);
+            }
 
-            const detection_boxes = output[0].arraySync()[0];
-            const detection_scores = output[1].arraySync()[0];
-            const detection_classes = output[2].arraySync()[0];
-            const num_detections = output[3].arraySync()[0];
-            tf.dispose(output);
 
             //console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
 
@@ -75,15 +84,29 @@ async function detect() {
         }
     };
 }
-
+let testDataUrl;
 function getInputData() {
-    return tf.tidy(function () {
-        let xResolution = model.executor.graph.inputs[0].attrParams.shape.value[1];
-        let yResolution = model.executor.graph.inputs[0].attrParams.shape.value[2];
+    if (ANDROID) {
+        //let begin = Date.now();
+        var can = document.createElement('canvas');
+        var con = can.getContext('2d');
+        can.width = input.videoWidth;
+        can.height = input.videoHeight;
+        con.drawImage(input, 0, 0, can.width, can.height);
+        //return con.getImageData(0, 0, input.videoWidth, input.videoHeight);
+        let dataUrl = can.toDataURL("image/png", 1.0)
+        //console.log(Date.now()-begin)
+        testDataUrl = dataUrl;
+        return dataUrl;
+    } else {
+        return tf.tidy(function () {
+            let xResolution = model.executor.graph.inputs[0].attrParams.shape.value[1];
+            let yResolution = model.executor.graph.inputs[0].attrParams.shape.value[2];
 
-        let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [xResolution, yResolution]).expandDims(0);
-        return inputData;
-    })
+            let inputData = tf.image.resizeNearestNeighbor(tf.browser.fromPixels(input), [xResolution, yResolution]).expandDims(0);
+            return inputData;
+        })
+    }
 }
 
 let stopped = false;

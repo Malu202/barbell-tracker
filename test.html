@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input id="file-input" type="file" name="name" />
+    <video id="videoInput" muted autoplay width="360" height="640"></video>
+</body>
+
+<script>
+    let fileInput = document.getElementById("file-input");
+    let input = document.getElementById("videoInput")
+
+    fileInput.addEventListener('change', function (event) {
+        var fileURL = URL.createObjectURL(fileInput.files[0]);
+        input.src = fileURL;
+    });
+</script>
+
+</html>

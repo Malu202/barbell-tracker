@@ -16,10 +16,11 @@ let adck = false;
 if (typeof Android !== "undefined") {
     adck = true;
 }
-const IS_ANDROID = adck;
+const ANDROID = adck;
 
 let newVideo;
-if (IS_ANDROID) {
+//let tf;
+if (ANDROID) {
 
     tf = {};
     alert = function(msg) {Android.showToast(msg);};
@@ -30,9 +31,9 @@ if (IS_ANDROID) {
     //     Android.loadFile();
     // });
 
-    newVideo = function (path) {
-        document.getElementById('videoInput').src = path;
-    }
+    // newVideo = function (path) {
+    //     document.getElementById('videoInput').src = path;
+    // }
 
     tf.loadGraphModel = function () {
         return {
@@ -40,5 +41,7 @@ if (IS_ANDROID) {
             executeAsync:function () { }
         }
     };
+    tf.tidy = function(){};
+    tf.getBackend = function(){return "Android"}
 }
 
