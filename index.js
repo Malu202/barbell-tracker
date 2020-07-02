@@ -46,11 +46,13 @@ async function detect() {
             const inputData = getInputData();
 
             if (ANDROID) {
-                const output = JSON.parse(Android.detect(inputData));
-                detection_boxes = output[0];
-                detection_scores = output[1];
-                detection_classes = output[2];
-                num_detections = output[3];
+                let output = Android.detect(inputData);
+                output = JSON.parse(Android.detect(inputData));
+                detection_boxes = output[0][0];
+                detection_classes = output[1][0];
+                detection_multiclass_scores = output[2][0];
+                detection_scores = output[3][0]
+                num_detections = 100;//output[3];
             } else {
                 const output = await model.executeAsync({ 'image_tensor': inputData },
                     ['detection_boxes', 'detection_scores', 'detection_classes', 'num_detections']);
