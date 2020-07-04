@@ -137,3 +137,11 @@ function newDrawingProperties() {
     console.log(drawBoxes, drawPath)
 }
 newDrawingProperties();
+
+function clearCanvas() {
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    previousDetections = [];
+    currentDetections = [];
+    path = [];
+
+}

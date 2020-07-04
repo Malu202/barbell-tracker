@@ -46,8 +46,10 @@ async function detect() {
             const inputData = getInputData();
 
             if (ANDROID) {
+
                 let output = Android.detect(inputData);
-                output = JSON.parse(Android.detect(inputData));
+                output = JSON.parse(output);
+
                 detection_boxes = output[0][0];
                 detection_classes = output[1][0];
                 detection_multiclass_scores = output[2][0];
@@ -66,14 +68,14 @@ async function detect() {
                 tf.dispose(output);
             }
 
-
             //console.log(detection_boxes, '\n', detection_scores, '\n', detection_classes, '\n', num_detections)
 
             drawAnnotations(detection_boxes, detection_scores, detection_classes, num_detections);
 
+
             const inferenceTime = Math.round((performance.now() - computeStart));
-            // console.log("inference: " + inferenceTime + "ms");
-            addInferenceTime(inferenceTime)
+            addInferenceTime(Math.round(inferenceTime))
+
             if (phoneMode) input.currentTime += 0.3;
             else input.currentTime += inferenceTime * 0.001 * 0.5;
 
@@ -86,19 +88,16 @@ async function detect() {
         }
     };
 }
-let testDataUrl;
 function getInputData() {
     if (ANDROID) {
-        //let begin = Date.now();
         var can = document.createElement('canvas');
         var con = can.getContext('2d');
-        can.width = input.videoWidth;
-        can.height = input.videoHeight;
+        can.width = 320;
+        can.height = 320;
         con.drawImage(input, 0, 0, can.width, can.height);
-        //return con.getImageData(0, 0, input.videoWidth, input.videoHeight);
-        let dataUrl = can.toDataURL("image/png", 1.0)
-        //console.log(Date.now()-begin)
-        testDataUrl = dataUrl;
+
+        let dataUrl = can.toDataURL("image/jpeg", 1.0).substring(23);
+
         return dataUrl;
     } else {
         return tf.tidy(function () {
@@ -126,29 +125,31 @@ computeButton.addEventListener("click", function () {
 })
 
 fileInput.addEventListener('change', function (event) {
-    var fileURL = URL.createObjectURL(fileInput.files[0]);
+    let file = fileInput.files[0];
+    if (file == undefined) return;
+    var fileURL = URL.createObjectURL(file);
     input.src = fileURL;
     computeButton.disabled = false;
+    clearCanvas();
+    if (stopped) computeButton.click();
+    document.body.style.backgroundColor = "#000";;
 });
 
 const performanceLabel = document.getElementById("performanceLabel")
-const performanceAveraging = 4;
-let inferenceSum = 0;
-let performanceIndex = 0;
+let inferenceTimes = [];
 function addInferenceTime(time) {
-    //console.log("add " + time);
-    //ignore first time, because it includes setup
-    if (inferenceSum == 0) {
-        inferenceSum = 1;
-        return;
-    }
-    inferenceSum += time;
-    performanceIndex++;
+    inferenceTimes.push(time)
 }
 function showInferenceTime() {
-    performanceLabel.innerText = "inference: " + Math.round(inferenceSum / performanceIndex) + "ms" + '\n' + "backend: " + tf.getBackend();
-    performanceIndex = 0;
-    inferenceSum = 0;
+    let sum = 0;
+    let warmupSteps = 3;
+    for (let i = warmupSteps; i < inferenceTimes.length; i++) {
+        sum += inferenceTimes[i];
+    }
+    let avg = Math.round(sum / (inferenceTimes.length - warmupSteps));
+
+    performanceLabel.innerText = "inference " + avg + "ms" + '\n' + "backend: " + tf.getBackend();
+    console.log(inferenceTimes);
 }
 
 let phoneMode = phoneModeCheckbox.checked;
