@@ -21,7 +21,7 @@ function drawAnnotations(detection_boxes, detection_scores, detection_classes, n
         detection_classes[i]
         if (detection_scores[i] > 0.5 && Math.round(detection_classes[i]) == 2) {
             currentDetections.push(new Detection(detection_boxes[i], detection_classes[i], detection_scores[i]))
-        } else if (detection_scores[i] > 0.2) {
+        } else if (detection_scores[i] > 0.35) {
             if (Math.round(detection_classes[i]) == 1) currentDetections.push(new Detection(detection_boxes[i], detection_classes[i], detection_scores[i]))
         } else break;
     }
