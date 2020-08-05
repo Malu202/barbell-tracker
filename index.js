@@ -8,7 +8,7 @@ const phoneModeCheckbox = document.getElementById("phoneMode");
 
 const urlParams = new URLSearchParams(window.location.search);
 let modelName = urlParams.get('model');
-if (modelName == undefined) modelName = "resnet50";
+if (modelName == undefined) modelName = "mobiledet";
 if (urlParams.get('boxes') == "true" && !boxesCheckbox.checked) boxesCheckbox.click();
 if (urlParams.get('boxes') == "false" && boxesCheckbox.checked) boxesCheckbox.click();
 if (urlParams.get('path') == "true" && !pathCheckbox.checked) pathCheckbox.click();
